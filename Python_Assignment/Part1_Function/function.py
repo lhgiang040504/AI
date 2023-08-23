@@ -24,6 +24,15 @@ def tokenize_byWord(string):
     result = []
     result = string.split(" ")
     return result
-
+"""
 string = str(input())
 print(tokenize_byWord(string))
+"""
+
+# Count sum by a dfunction that take a variable number of argument
+def Sum(*arg):
+    total = sum(arg)
+    return total
+"""
+print(Sum(1, 2))
+"""
