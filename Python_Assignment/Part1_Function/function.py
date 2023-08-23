@@ -18,3 +18,12 @@ lst = list(input().split(" "))
 num = int(input())
 print(collect_commonRemander(lst, num))
 """
+
+# Split a string into a list of word
+def tokenize_byWord(string):
+    result = []
+    result = string.split(" ")
+    return result
+
+string = str(input())
+print(tokenize_byWord(string))
