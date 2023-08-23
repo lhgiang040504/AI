@@ -36,3 +36,17 @@ def Sum(*arg):
 """
 print(Sum(1, 2))
 """
+
+# Default information
+def initialize_employee(name = "", gender = None, salary = 0):
+    employee = {
+        "name": name,
+        "gender": gender,
+        "salary" : salary
+    }
+    return employee
+
+employee = initialize_employee("Sahra")
+for key, value in employee.items():
+    # print("{}: {}".format(key, value))
+    print(f"{key}: {value}")
