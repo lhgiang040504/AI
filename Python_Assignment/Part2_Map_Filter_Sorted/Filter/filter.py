@@ -11,20 +11,18 @@ def initial_capsWord(input):
 
 # Use filter to get dict that hasnot specific key or value 
 def filt_Dict(input):
-    output = filter((lambda x : "a" not in x ), input)
+    output = filter(lambda x: "a" not in x, input)
     return list(output)
 
 dict_list = [] # Initialize an empty list to store dictionaries
-while True: # Loop to continuously input dictionaries
-    key = input()
-    value = input()
-    
-    # Check if the user wants to stop
-    if key.lower() == 'stop':
-        break
-    
-    # Create a dictionary using the input
-    user_dict = {key: value}
-    dict_list.append(user_dict)
+user_input = input().split(";")
 
+for item in user_input:
+    dct = {}
+    temp1 = item.split(" ")
+    
+    for pair in temp1:
+        temp2 = pair.split(":")
+        dct[temp2[0]] = temp2[1]
+    dict_list.append(dct)
 print(filt_Dict(dict_list))
