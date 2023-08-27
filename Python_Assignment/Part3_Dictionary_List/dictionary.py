@@ -12,8 +12,14 @@ def check_Key(dct, lst):
             return False
     return True
 
-dct = {"key_1": "value_1", "key_2": "value_2", "key_3": "value_3"}
-lst1 = ["key_1", "key_4"]
-lst2 = ["key_2", "key_3"]
-print(check_Key(dct, lst1))
-print(check_Key(dct, lst2))
+# Remove a cpecific key
+def remove_Key(dct, key):
+    if key in dct:
+        del dct[key]
+        return dict(dct)
+    else:
+        return "Key not found in the dictionary"
+    
+dct = {"1": "value_1", "2": "value_2", "3": "value_3"}
+key = 1
+print(remove_Key(dct, str(key)))
