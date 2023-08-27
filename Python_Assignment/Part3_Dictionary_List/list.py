@@ -21,7 +21,17 @@ def IterateDoubleDirection(lst1, lst2):
 def remove_emptyStringsMember(lst):
     result = filter(lambda x : x != "", lst)
     return list(result)
-lst_1 = ["10", "20", "30", "", "40"]
 
-print(remove_emptyStringsMember(lst_1))
+# Remove all occurrence of 20 from the list by using list comprehension
+# my basic
+def basic(lst):
+    result = []
+    for x in lst:
+        if x == "20" and x in result:
+            continue
+        result.append(x)
+    return result
+lst_1 = ["10", "20", "30", "40", "20", "50"]
+
+print(basic(lst_1))
 
