@@ -1,10 +1,19 @@
 # Concatenate two lists index-wise
-def concatenate_Lists(lst1, lst2):
+def index_wiseConcatenate_Lists(lst1, lst2):
     result = []
     for x, y in zip(lst1, lst2):
         result.append(x + y)
     return result
+def following_orderConcatenate_Lists(lst1, lst2):
+    result = []
+    for x in lst1:
+        for y in lst2:
+            result.append(x + " " + y)
+    return result
+"reference"
 
-lst_1 = ["W", "a", "Novo"]
-lst_2 = ["e", "re", "bi"]
-print(concatenate_Lists(lst_1, lst_2))
+
+lst_1 = ["Hello", "World"]
+lst_2 = ["Dear", "Sir"]
+print(following_orderConcatenate_Lists(lst_1, lst_2))
+
