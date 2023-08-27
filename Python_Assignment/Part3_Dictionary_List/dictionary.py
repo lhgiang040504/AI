@@ -38,6 +38,17 @@ def count_listValuesInDictionary(dct):
             total_items += len(value)
     return total_items
 "new** isinstance function"
-dict_1 = {"key_1": "value_1", "key_2": ["value_3", "value_4", "value_5"]}
-print(count_listValuesInDictionary(dict_1))
+
+# Group elements of a list based on its length:
+def grouping_baseLength(lst):
+    dct = {}
+    for element in lst:
+        length = len(element)
+        if length not in dct:
+            dct[length] = [element]
+        else:
+            dct[length].append(element)
+    return dict(dct)
+dct = ["the", "purpose", "of", "our", "lives", "is", "to", "be", "happy"]
+print(grouping_baseLength(dct))
 
