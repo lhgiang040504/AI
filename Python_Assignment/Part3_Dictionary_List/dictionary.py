@@ -28,8 +28,16 @@ def concatenate_Dictionaries_1(*arg):
     return dict(result)
 def concatenate_Dictionaries_2(*arg):
     return {k: v for dct in arg for k, v in dct.item()}
-dict_1 = {1: 10, 2: 20}
-dict_2 = {3: 30, 4: 40}
-dict_3 = {5: 50, 6: 60}
-print(concatenate_Dictionaries_1(dict_1, dict_2, dict_3))
+"unpacking way"
+
+# Count number of items in a dictionary that value is a list
+def count_listValuesInDictionary(dct):
+    total_items = 0
+    for value in dct.values():
+        if isinstance(value, list):
+            total_items += len(value)
+    return total_items
+"new** isinstance function"
+dict_1 = {"key_1": "value_1", "key_2": ["value_3", "value_4", "value_5"]}
+print(count_listValuesInDictionary(dict_1))
 
