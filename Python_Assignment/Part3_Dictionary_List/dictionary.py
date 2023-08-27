@@ -19,7 +19,17 @@ def remove_Key(dct, key):
         return dict(dct)
     else:
         return "Key not found in the dictionary"
-    
-dct = {"1": "value_1", "2": "value_2", "3": "value_3"}
-key = 1
-print(remove_Key(dct, str(key)))
+
+# Concatenate dictionaries
+def concatenate_Dictionaries_1(*arg):
+    result = {}
+    for dct in arg:
+        result.update(dct)
+    return dict(result)
+def concatenate_Dictionaries_2(*arg):
+    return {k: v for dct in arg for k, v in dct.item()}
+dict_1 = {1: 10, 2: 20}
+dict_2 = {3: 30, 4: 40}
+dict_3 = {5: 50, 6: 60}
+print(concatenate_Dictionaries_1(dict_1, dict_2, dict_3))
+
