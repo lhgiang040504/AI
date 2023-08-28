@@ -31,7 +31,9 @@ def basic(lst):
             continue
         result.append(x)
     return result
-
+"""
+output_list = [item for item in input_list if item != "20"]
+"""
 
 # Sort a list of dictionary based on the specific key
 def sortListDict_baseKey(lst):
