@@ -31,7 +31,16 @@ def basic(lst):
             continue
         result.append(x)
     return result
-lst_1 = ["10", "20", "30", "40", "20", "50"]
 
-print(basic(lst_1))
+
+# Sort a list of dictionary based on the specific key
+def sortListDict_baseKey(lst):
+    return sorted(lst , key = lambda k : k['model'], reverse=True)
+lst_1 = [
+        {"make": "Nokia", "model": 216, "color": "Black"},
+        {"make": "Mi Max", "model": 2, "color": "Gold"},
+        {"make": "Samsung", "model": 7, "color": "Blue"}
+    ]
+
+print(sortListDict_baseKey(lst_1))
 
