@@ -18,3 +18,10 @@ class RationalNumber:
     def simplify(self):
         gcd = math.gcd(self.nume, self.deno)
         return RationalNumber(self.nume / gcd, self.deno / gcd)
+    
+    def __str__(self):
+        self = self.simplify()
+        if self.deno == 1:
+            return f"{self.nume}"
+        else:
+            return f"{self.nume} / {self.deno}"
