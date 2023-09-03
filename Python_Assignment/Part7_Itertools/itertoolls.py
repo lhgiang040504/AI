@@ -44,7 +44,6 @@ from itertools import chain
 def combine_List(lst_1, lst_2):
     # Combine the lists using itertools.chain
     return list(chain(lst_1 + lst_2))
-
 # Before combine, we need extract the nested list
 def flatten_list(lst):
     result = []
@@ -54,7 +53,7 @@ def flatten_list(lst):
         else:
             result.append(item)
     return result
-
+"""
 # Input lists
 lst_1 = [["We", "are"], "Novobi"]
 lst_2 = ["We", ["are", "Novobi"]]
@@ -62,3 +61,26 @@ lst_1 = flatten_list(lst_1)
 lst_2 = flatten_list(lst_2)
 # Print the combined list
 print(combine_List(lst_1, lst_2))
+"""
+
+#3. Use `itertools` to generate unique combinations
+def combine_Unique1(lst):
+    result = []
+    for i in range(len(lst)):
+        for j in range(i + 1, len(lst)):
+            result.append(f"{lst[i]} - {lst[j]}")
+    return result
+from itertools import combinations
+def combine_Unique2(lst):
+    # Generate unique combinations of 2 elements
+    unique_combinations = list(combinations(lst, 2))
+
+    # Format the combinations as strings
+    return [" - ".join(combination) for combination in unique_combinations]
+
+# unique_combinations = [f"{a} - {b}" for i, a in enumerate(input_list) for j, b in enumerate(input_list) if i < j]
+"""
+combination
+permutation
+"""
+print(combine_Unique2(["Red", "Yellow", "Green"]))
