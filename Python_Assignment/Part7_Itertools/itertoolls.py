@@ -9,7 +9,10 @@ def group_BySimilar(lst):
         groups[lastName].append(element)
 
     return groups
-
+"""
+Noticed:
+    "group" container must be dictionary of this way
+"""
 lst = ["Thomas Brown", "Tom Smith", "Jane Brown", "John Smith"]
 print(group_BySimilar(lst))
 
