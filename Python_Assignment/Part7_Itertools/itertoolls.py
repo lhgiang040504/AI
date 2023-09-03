@@ -38,3 +38,27 @@ def group_BySimilar2(lst):
 lst = ["Thomas Brown", "Tom Smith", "Jane Brown", "John Smith"]
 print(group_BySimilar2(lst))
 """
+
+#2. Use `itertools` to combine two lists into a new list
+from itertools import chain
+def combine_List(lst_1, lst_2):
+    # Combine the lists using itertools.chain
+    return list(chain(lst_1 + lst_2))
+
+# Before combine, we need extract the nested list
+def flatten_list(lst):
+    result = []
+    for item in lst:
+        if isinstance(item, list):
+            result.extend(flatten_list(item))
+        else:
+            result.append(item)
+    return result
+
+# Input lists
+lst_1 = [["We", "are"], "Novobi"]
+lst_2 = ["We", ["are", "Novobi"]]
+lst_1 = flatten_list(lst_1)
+lst_2 = flatten_list(lst_2)
+# Print the combined list
+print(combine_List(lst_1, lst_2))
