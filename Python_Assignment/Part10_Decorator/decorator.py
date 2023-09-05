@@ -49,3 +49,61 @@ def some_function():
     time.sleep(2)  # Simulate some work
 
 #some_function()
+
+def bold_Decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        return f"<b>{result}<b>"
+    return wrapper
+def italic_Decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        return f"<i>{result}<i>"
+        pass
+    return wrapper
+def underline_Decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        return f"<u>{result}<u>"
+    return wrapper
+
+@bold_Decorator
+@italic_Decorator
+@underline_Decorator
+def func(text):
+    return text
+"""
+text = "hello everyone"
+result = func(text)
+print(result)
+"""
+
+def decor1(func):
+    @wraps(func)
+    def wrapper():
+        result = func()
+        return result ** 2
+    return wrapper
+
+def decor2(func):
+    @wraps(func)
+    def wrapper():
+        result = func()
+        return result * 2
+    return wrapper
+
+@decor1
+@decor2
+def num_a():
+    return 10
+
+@decor2
+@decor1
+def num_b():
+    return 10
+
+print(num_a())
+print(num_b())
