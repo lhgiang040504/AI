@@ -20,3 +20,16 @@ def predict_LableModel(x_test, coefficient):
     intercept = coefficient[-1]
 
     return x_test * slope + intercept
+
+
+
+def compute_MSE(y_test, y_pred):
+    length = len(y_pred)
+
+    # Sum square error
+    sae = sum((y_pred[i] - y_test[i])**2 for i in range(length))
+    # Mean square error
+    mse = sae / length
+
+    return mse
+
