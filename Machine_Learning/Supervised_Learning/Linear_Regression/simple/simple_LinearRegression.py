@@ -34,19 +34,17 @@ def compute_MSE(y_test, y_pred):
     return mse
 
 
-def calculate_PercentageError(y_test, y_pred, coefficient):
+def calculate_PercentageError(y_test, y_pred):
     """
     Calculate the Percentage Error for a simple linear regression model.
     
     Parameters:
-    X (list): List of independent variable values.
-    Y (list): List of actual dependent variable values.
+    y_test (list): List of true value.
+    y_pred (list): List of predicted value.
     
     Returns:
     float: The Percentage Error as a percentage.
     """
-    slope = coefficient[0]
-    intercept = coefficient[-1]
 
     n = len(y_test)
 
