@@ -91,6 +91,7 @@ class Multiple_LinearRegression:
         Returns:
         - Mean Squared Error (MSE), a non-negative float.
         """
+        label_true = label_true.values
         mse = np.mean((label_pred - label_true)**2)
 
         return mse
