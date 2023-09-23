@@ -10,9 +10,9 @@ class LogisticRegression:
     def _add_bias(self, feature):
         """
         input:
-            x: np.arr (obser, feature)
+            x: np.arr (obsers, feature)
         output:
-             : an np.arr (obser, feature + 1)
+             : an np.arr (obsers, feature + 1)
         """
         bias = np.zeros((feature.shape[0], 1))
         feature = np.concatenate((feature, bias), axis=1) # update x that has bias column at the last column
@@ -27,13 +27,18 @@ class LogisticRegression:
 
     def _softmax(self, z):
         exp_z = np.exp(z)
-        return exp_z / np.sum(exp_z)
+        return exp_z / np.sum(exp_z, axis=1, keepdims=True)
     
     def _one_hot_encoding(self, labels):
+        """
+        input:
+            labels : np.arr (obsers, 1) type: be considered as string
+        output:
+            : an np.arr (obsers, num_classes)
+        """
         num_classes = len(self.classes)
         num_observations = labels.shape[0]
         encoded = np.zeros((num_observations, num_classes))
-        
         for i, label in enumerate(labels):
             encoded[i, label] = 1
         return encoded
@@ -43,22 +48,22 @@ class LogisticRegression:
         num_features = observations.shape[1]
         num_classes = len(self.classes)
 
-        self.coefficent = np.zeros((num_classes, num_features+1))
+        self.coefficent = np.zeros((num_classes, num_features + 1)) # (num_classes, num_features + 1)
 
-        observations = self._add_bias(observations)
+        observations = self._add_bias(observations) # (obsers, num_features + 1)
         labels = self._one_hot_encoding(labels)
         
         for _ in range(self.num_iters):
-            scores = np.dot(observations, self.coefficent)
-            probabilities = self._softmax(scores)
+            scores = np.dot(observations, self.coefficent.T) # (obsers, num_classes)
+            probabilities = self._softmax(scores) # (obsers, num_classes)
             
             error = probabilities - labels
-            gradient = np.dot(X.T, error)
-            self.coefficent -= self.learning_rate * gradient
+            gradient = np.dot(error.T, observations) # (num_classes, num_features + 1)
+            self.coefficent -= gradient * self.learning_rate 
            
     def predict(self, observations):
         observations = self._add_bias(observations)
-        scores = np.dot(observations, self.coefficent)
+        scores = np.dot(observations, self.coefficent.T)
         probabilities = self._softmax(scores)
         return np.argmax(probabilities, axis=1)
 
@@ -72,5 +77,20 @@ from sklearn.metrics import accuracy_score
 iris = load_iris()
 X = iris.data
 y = iris.target
-bias = np.zeros((X.shape[0], 1))
-print(np.concatenate((bias, X)))
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+len(X_train)
+
+# Create an instance of LogisticRegression
+lr = LogisticRegression()
+
+# Train the model
+lr.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = lr.predict(X_test)
+
+# Calculate accuracy of the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy}")
