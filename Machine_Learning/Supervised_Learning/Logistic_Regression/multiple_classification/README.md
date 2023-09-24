@@ -1,0 +1,7 @@
+Logistic regression is a binary classification algorithm that is commonly used when the target variable has two classes. However, it can be extended to handle problems with more than two labels using various techniques. One such technique is called "one-vs-rest" (also known as "one-vs-all") classification.
+
+In one-vs-rest classification, you train multiple binary logistic regression models, each one comparing one class against the rest of the classes. For example, if you have three classes labeled A, B, and C, you would train three logistic regression models: one to distinguish A from B and C, another to distinguish B from A and C, and a third one to distinguish C from A and B.
+
+During inference, you would apply each of the trained models to the input data and assign the label associated with the model that produces the highest probability or confidence. In this way, you can use logistic regression to perform multi-class classification.
+
+It's worth mentioning that logistic regression is a linear classifier and may not perform optimally for complex multi-class problems. In such cases, you might consider using other algorithms like support vector machines (SVM), random forests, or neural networks, which can handle multi-class classification more effectively.
