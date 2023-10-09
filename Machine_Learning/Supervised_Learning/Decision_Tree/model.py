@@ -26,6 +26,7 @@ class Decision_Tree:
             feature_idx : The index of the feature for which the Gini index is calculated.
             threshold :  The threshold value used to split the data based on the specified feature.
         return:
+            gini_index
 
         """
         # Split the data based on the given threshold and feature
@@ -45,3 +46,20 @@ class Decision_Tree:
         gini_index = (len_left / len_total) * gini_left + (len_right / len_total) * gini_right
         
         return gini_index
+    
+    def find_best_split(self, X, y):
+        best_gini_index = np.inf
+        best_feature = None
+        best_threshold = None
+
+        for feature_idx in range(X.shape[1]):
+            thresholds = np.unique(X.iloc[:, feature_idx])
+            for threshold in thresholds:
+                gini_index = self.gini_index(X, y, feature_idx, threshold)
+
+                if gini_index < best_gini_index:
+                    best_gini_index = gini_index
+                    best_feature = feature_idx
+                    best_threshold = threshold
+
+        return best_feature, best_threshold
