@@ -48,6 +48,8 @@ class Decision_Tree:
         return gini_index
     
     def find_best_split(self, X, y):
+        
+
         best_gini_index = np.inf
         best_feature = None
         best_threshold = None
@@ -63,3 +65,62 @@ class Decision_Tree:
                     best_threshold = threshold
 
         return best_feature, best_threshold
+    
+    def fit(self, X, y):
+        self.tree = self.build_tree(X, y)
+
+    def build_tree(self, X, y):
+        # Base case: If all samples belong to the same class, return a leaf node
+        if len(np.unique(y) == 1):
+            return {'class' : y[0]}
+        
+        # Base case: If we have no more features to split on, return the majority class
+        if X.shape[1] == 0:
+            unique_classes, counts = np.unique(X, return_counts=True)
+            majority_class = unique_classes[np.argmax(counts)]
+            return {'class' : majority_class}
+        
+        # Find the best feature and threshold to split the data
+        best_feature, best_threshold = self.find_best_split(X, y)
+
+        # Split the data based on the best feature and best threshold
+        left_mask = X.iloc[:, best_feature] <= best_threshold
+        right_mask = X.iloc[:, best_feature] > best_threshold
+        X_left, y_left = X[left_mask], y[left_mask]
+        X_right, y_right = X[right_mask], y[right_mask]
+
+        # Recursive call to build tree
+        left_subtree = self.build_tree(X_left, y_left)
+        right_subtree = self.build_tree(X_right, y_right)
+
+        # Create the current node with the best feature and best threshold
+        node = {
+            'feature' : best_feature,
+            'threshold' : best_threshold,
+            'left_subtree' : left_subtree,
+            'right_subtree' : right_subtree
+        }
+
+        return node
+    
+    def predict(self, X):
+        # Predict the class for each instance in X
+        return np.array([self.traverse_tree(x, self.tree) for x in X])
+    
+    def traverse_tree(self, x, node):
+        """
+        parameters:
+            x : An observation
+            node : Node in tree
+        return:
+            label : Label prediction of instance observation
+        """
+        
+        # If the current node is a leaf node (it has a 'class' attribute), return the predicted class
+        if 'class' in node:
+            return node['class']
+
+        if x[node['feature']] <= node['threshold']:
+            return self.traverse_tree(x, node['left'])
+        else:
+            return self.traverse_tree(x, node['right'])
