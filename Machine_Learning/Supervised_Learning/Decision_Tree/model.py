@@ -2,6 +2,7 @@ import numpy as np
 
 class Decision_Tree:
     def __init__(self, max_depth=None):
+        self.max_depth = max_depth
         self.tree = {}
 
     def gini(self, y):
@@ -26,7 +27,7 @@ class Decision_Tree:
             feature_idx : The index of the feature for which the Gini index is calculated.
             threshold :  The threshold value used to split the data based on the specified feature.
         return:
-            gini_index
+            gini_index : The gini INdex of the split
 
         """
         # Split the data based on the given threshold and feature
@@ -48,8 +49,6 @@ class Decision_Tree:
         return gini_index
     
     def find_best_split(self, X, y):
-        
-
         best_gini_index = np.inf
         best_feature = None
         best_threshold = None
@@ -69,16 +68,10 @@ class Decision_Tree:
     def fit(self, X, y):
         self.tree = self.build_tree(X, y)
 
-    def build_tree(self, X, y):
+    def build_tree(self, X, y, depth=0):
         # Base case: If all samples belong to the same class, return a leaf node
-        if len(np.unique(y) == 1):
+        if len(np.unique(y) == 1) or (self.max_depth is not None and depth == self.max_depth):
             return {'class' : y[0]}
-        
-        # Base case: If we have no more features to split on, return the majority class
-        if X.shape[1] == 0:
-            unique_classes, counts = np.unique(X, return_counts=True)
-            majority_class = unique_classes[np.argmax(counts)]
-            return {'class' : majority_class}
         
         # Find the best feature and threshold to split the data
         best_feature, best_threshold = self.find_best_split(X, y)
@@ -90,8 +83,8 @@ class Decision_Tree:
         X_right, y_right = X[right_mask], y[right_mask]
 
         # Recursive call to build tree
-        left_subtree = self.build_tree(X_left, y_left)
-        right_subtree = self.build_tree(X_right, y_right)
+        left_subtree = self.build_tree(X_left, y_left, depth + 1)
+        right_subtree = self.build_tree(X_right, y_right, depth + 1)
 
         # Create the current node with the best feature and best threshold
         node = {
@@ -105,7 +98,7 @@ class Decision_Tree:
     
     def predict(self, X):
         # Predict the class for each instance in X
-        return np.array([self.traverse_tree(x, self.tree) for x in X])
+        return np.array([self.traverse_tree(x, self.tree) for x in X.values])
     
     def traverse_tree(self, x, node):
         """
