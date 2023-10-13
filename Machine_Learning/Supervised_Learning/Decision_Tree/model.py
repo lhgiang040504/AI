@@ -4,7 +4,9 @@ class Decision_Tree:
     def __init__(self, max_depth=None):
         self.max_depth = max_depth
         self.tree = {}
+        print("hello world")
 
+    # CART  -----------
     def gini(self, y):
         """
         parameters: 
@@ -48,7 +50,8 @@ class Decision_Tree:
         
         return gini_index
     
-    def find_best_split(self, X, y):
+    # Classification and Regression Trees
+    def CART_find_Best_Split(self, X, y):
         best_gini_index = np.inf
         best_feature = None
         best_threshold = None
@@ -64,6 +67,54 @@ class Decision_Tree:
                     best_threshold = threshold
 
         return best_feature, best_threshold
+
+    # C45 - ID3     ----------
+    def entropy(self, y):
+        # Calculate the entropy of a target variable
+        classes, counts = np.unique(y, return_counts=True)
+        probabilities = counts / len(y)
+        entropy = -np.sum(probabilities * np.log2(probabilities))
+        
+        return entropy
+
+    def information_gain(self, X, y, feature_idx, threshold):
+        # Calculate the information gain for a given feature and threshold
+        entropy_parent = self.entropy(y)
+
+        # Split the data based on the given feature and threshold
+        left_mask = X.iloc[:, feature_idx] <= threshold
+        right_mask = X.iloc[:, feature_idx] > threshold
+        y_left = y[left_mask]
+        y_right = y[right_mask]
+
+        # Calculate the entropy of the left and right subsets
+        entropy_left = self.entropy(y_left)
+        entropy_right = self.entropy(y_right)
+
+        # Calculate the information gain
+        n_left = len(y_left)
+        n_right = len(y_right)
+        n_total = len(y)
+        information_gain = entropy_parent - (n_left / n_total * entropy_left) - (n_right / n_total * entropy_right)
+        return information_gain
+
+    def C45_find_Best_Split(self, X, y):
+        best_InforGain = 0
+        best_feature = None
+        best_threshold = None
+
+        for feature_idx in range(X.shape[1]):
+            thresholds = np.unique(X.iloc[:, feature_idx])
+            for threshold in thresholds:
+                infor_gain = self.information_gain(X, y, feature_idx, threshold)
+
+                if infor_gain > best_InforGain:
+                    best_InforGain = infor_gain
+                    best_feature = feature_idx
+                    best_threshold = threshold
+
+        return best_feature, best_threshold
+
     
     def fit(self, X, y):
         self.tree = self.build_tree(X, y)
@@ -114,6 +165,6 @@ class Decision_Tree:
             return node['class']
 
         if x[node['feature']] <= node['threshold']:
-            return self.traverse_tree(x, node['left'])
+            return self.traverse_tree(x, node['left_subtree'])
         else:
-            return self.traverse_tree(x, node['right'])
+            return self.traverse_tree(x, node['right_subtree'])
