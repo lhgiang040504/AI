@@ -31,8 +31,12 @@ class DecisionTree:
         # Base case : If n_sample reaches the min_sample or max_depth is exceeded, do the majority vote
         if (n_samples <= self.min_sample) or (depth == self.max_depth):
             label_frequency = np.unique(y, return_counts=True)
-            majority_label = label_frequency[0][np.argmax(label_frequency[1])]
-            return Node(value=majority_label)
+            
+            if len(label_frequency[0]) == 0:
+                return Node()
+            else:
+                majority_label = label_frequency[0][np.argmax(label_frequency[1])]
+                return Node(value=majority_label)
 
         # Find the best feature and threshold to split the data
         best_feature, best_threshold = self._find_best_split(X, y)
@@ -58,13 +62,13 @@ class DecisionTree:
         return left_mask, right_mask
     
     def _find_best_split(self, X, y):
-        return self._ID3_find_best_split(X, y)
+        return self._CART_find_best_split(X, y)
     
     # ---- ID3 algorithm to find best property for splitting
     def _entropy(self, y):
         # Calculate the entropy of a target variable
-        bincounts = np.bincount(y)
-        probabilities = bincounts / len(y)
+        _, frequency = np.unique(y, return_counts=True)
+        probabilities = frequency / len(y)
         result = -np.sum([probability * np.log(probability) for probability in probabilities if np.greater(probability, 0)])
         return result
     
@@ -110,9 +114,71 @@ class DecisionTree:
         return best_feature, best_threshold
     # ----
 
+    # ---- CART Classification And Regression Tree
+    def _gini(self, y):
+        """
+        parameters: 
+            y : Label of observations based on specified features within threshold.
+        return:
+            gini_impurity : Impurity values of y.
+        """
+        # Calculate the Gini Impurity of a target variable
+        _, counts = np.unique(y, return_counts=True)
+        probabilities = counts / len(y)
+        gini_impurity = 1 - np.sum(probabilities ** 2)
+        
+        return gini_impurity
+    
+    def _gini_index(self, X, y, feature_idx, threshold):
+        """
+        parameters:
+            X : The feature matrix, where each row represents a sample and each column represents a feature.
+            y : The target variable, which contains the corresponding class labels for each sample.
+            feature_idx : The index of the feature for which the Gini index is calculated.
+            threshold :  The threshold value used to split the data based on the specified feature.
+        return:
+            gini_index : The gini INdex of the split
+
+        """
+        # Split the data based on the given threshold and feature
+        left_mask, right_mask = self._split(X, y, feature_idx, threshold)
+        y_left = y[left_mask]
+        y_right = y[right_mask]
+        if len(y_left) * len(y_right) == 0:
+            return 0
+
+        # Calculate the Gini Impurity of the left and right subsets
+        gini_left = self._gini(y_left)
+        gini_right = self._gini(y_right)
+
+        # Calculate the Gini Index
+        len_left = len(y_left)
+        len_right = len(y_right)
+        len_total = len(y)
+        gini_index = (len_left / len_total) * gini_left + (len_right / len_total) * gini_right
+        
+        return gini_index
+    
+    def _CART_find_best_split(self, X, y):
+        best_gini_index = np.inf
+        best_feature = None
+        best_threshold = None
+
+        for feature_idx in range(X.shape[1]):
+            thresholds = np.unique(X[:, feature_idx])
+            for threshold in thresholds:
+                gini_index = self._gini_index(X, y, feature_idx, threshold)
+                if gini_index < best_gini_index:
+                    best_gini_index = gini_index
+                    best_feature = feature_idx
+                    best_threshold = threshold
+
+        return best_feature, best_threshold
+    # ----
+
     def predict(self, X):
         # Predict the class for each instance in X
-        return np.array([self._traverse_tree(x, self.root) for x in X])
+        return np.array([self._traverse_tree(x, self.root) for x in X], dtype=object)
     
     def _traverse_tree(self, x, node):
         if node.is_leaf_node():
