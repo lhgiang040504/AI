@@ -1,7 +1,7 @@
 import numpy as np
 
 class Node:
-    def __init__(self, feature=None, threshold=None, left_subtree=None, right_subtree=None, *, value = None):
+    def __init__(self, feature=None, threshold=None, left_subtree=None, right_subtree=None, *, value=None):
         self.feature = feature
         self.threshold = threshold
         self.left_subtree = left_subtree
@@ -12,10 +12,11 @@ class Node:
         return self.value is not None
 
 class DecisionTree:
-    def __init__(self, max_depth=10, min_sample=2):
+    def __init__(self, max_depth=10, min_sample=2, *, helper_func=None):
         self.max_depth = max_depth
         self.min_sample = min_sample
         self.root = None
+        self.type = 1 if helper_func == "CART" else 0
 
     def fit(self, X, y):
         self.root = self._build_tree(X, y)
@@ -62,7 +63,7 @@ class DecisionTree:
         return left_mask, right_mask
     
     def _find_best_split(self, X, y):
-        return self._CART_find_best_split(X, y)
+        return self._CART_find_best_split(X, y) if self.type == 1 else self._ID3_find_best_split(X, y)
     
     # ---- ID3 algorithm to find best property for splitting
     def _entropy(self, y):
@@ -162,12 +163,13 @@ class DecisionTree:
     def _CART_find_best_split(self, X, y):
         best_gini_index = np.inf
         best_feature = None
-        best_threshold = None
+        best_threshold = 0
 
         for feature_idx in range(X.shape[1]):
             thresholds = np.unique(X[:, feature_idx])
             for threshold in thresholds:
                 gini_index = self._gini_index(X, y, feature_idx, threshold)
+                
                 if gini_index < best_gini_index:
                     best_gini_index = gini_index
                     best_feature = feature_idx
