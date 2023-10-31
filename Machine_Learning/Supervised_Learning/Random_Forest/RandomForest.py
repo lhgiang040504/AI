@@ -39,7 +39,7 @@ class RandomForest:
         return X[indices], y[indices]
 
     
-    def _most_common_labels(self, predictions):
+    def _most_common_label(self, predictions):
         # Create a set that contain of list label and their frequency
         label_frequency_set = np.unique(predictions, return_counts=True)
         
@@ -60,9 +60,17 @@ class RandomForest:
             # Append to outer list
             predictions.append(prediction)
         
-        
+        result = []
+        for i in range(len(X)):
+            # Get corresponding elemnents from each tree of forest
+            labels = [predictions[tree_idx][i] for tree_idx in range(self.n_trees)]
+            # Find the most common element
+            most_common_label = self._most_common_label(labels)
 
-        return predictions
+            # Append most_common_label to our result
+            result.append(most_common_label)
+
+        return result
 
 
 
