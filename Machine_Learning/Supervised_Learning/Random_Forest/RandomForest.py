@@ -1,5 +1,4 @@
 from DecisionTree import DecisionTree
-from collections import Counter
 import numpy as np
 
 class RandomForest:
@@ -7,16 +6,15 @@ class RandomForest:
         self.n_trees = n_trees
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
-        self.forest = None
+        self.forest = []
 
     def fit(self, X, y):
-        self.forest = []
         for _ in range(self.n_trees):
             # Call the Decisiontree model
             tree = DecisionTree(helper_func="ID3")
             
             # Bootstrap data
-            X_bootstrap, y_bootstrap = self._boosttrap_samples(X, y)
+            X_bootstrap, y_bootstrap = self._bootstrap_samples(X, y)
             
             # Build tree, a part of n_trees
             tree.fit(X_bootstrap, y_bootstrap)
@@ -24,7 +22,12 @@ class RandomForest:
             # Add new tree to forest
             self.forest.append(tree)
 
-    def _boosttrap_samples(self, X, y):
+    def _bootstrap_samples(self, X, y):
+        """
+        parameter : X, y numpy array that are data and target
+        
+        return : update input to get bootstrap dataset that has Duplicates allowed
+        """
         n_samples = X.shape[0]
         # indices = np.random.randint(0, n_samples, size=(n_samples)) not satify the require // lower bound and upper bound
         indices = np.random.choice(n_samples, n_samples, replace=True)
@@ -36,29 +39,27 @@ class RandomForest:
         return X[indices], y[indices]
 
     
-    def _most_common_label(self, predictions):
-        """
-        predictions : list of lists where each rows is a prediction of corresponding obser from forest
-        """
-
-        # Create a set that contain two elements of each rows.
-        # First element is the list label predicted of obser and the second is list frequency of each label in first one.
-        label_frequency_set = np.array([np.unique(prediction, return_counts=True) for prediction in predictions])
+    def _most_common_labels(self, predictions):
+        # Create a set that contain of list label and their frequency
+        label_frequency_set = np.unique(predictions, return_counts=True)
         
         # Get the label that appear with the most time of each predictions obser
-        majority_label = np.array([label_frequency[0][np.argmax(label_frequency[1])] for label_frequency in label_frequency_set])
+        majority_label = label_frequency_set[0][np.argmax(label_frequency_set[1])] 
         
         return majority_label   
     
 
 
     def predict(self, X):
-        
-        predictions = np.array([np.squeeze(tree.predict(X)) for tree in self.forest])
-                
+        predictions = []
+        for tree in self.forest:
+            prediction = tree.predict(X).reshape(1, -1)
 
-        most_common_labels = np.array([self._most_common_label(predictions)])
-        return most_common_labels
+            predictions.append(prediction)
+        
+        
+
+        return predictions
 
 
 
