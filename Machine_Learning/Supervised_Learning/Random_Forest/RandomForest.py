@@ -51,10 +51,13 @@ class RandomForest:
 
 
     def predict(self, X):
+        # Initial a list that contain all prediction of all tree
+        # Shape (n_trees, n_sample)
         predictions = []
         for tree in self.forest:
-            prediction = tree.predict(X).reshape(1, -1)
-
+            # Predict X with current tree
+            prediction = np.ravel(tree.predict(X).reshape(1, -1))
+            # Append to outer list
             predictions.append(prediction)
         
         
